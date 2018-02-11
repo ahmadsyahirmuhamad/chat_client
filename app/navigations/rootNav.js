@@ -2,12 +2,12 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 
 import UnauthorizedNav from './UnauthorizedNav'
-import AuthorizedNav from './AuthorizedNav'
+import TabNavScreen from './TabNav'
 
 const RootStack = StackNavigator(
     {
         Authorized: {
-            screen: AuthorizedNav,
+            screen: TabNavScreen,
         },
         Unauthorized: {
             screen: UnauthorizedNav,
