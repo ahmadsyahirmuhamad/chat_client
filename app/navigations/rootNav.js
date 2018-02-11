@@ -14,7 +14,7 @@ const RootStack = StackNavigator(
         },
     },
     {
-        initialRouteName: 'Unauthorized',
+        initialRouteName: 'Authorized',
         headerMode: 'none',
         cardStyle: {
           shadowColor: 'transparent',

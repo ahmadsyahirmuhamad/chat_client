@@ -13,16 +13,16 @@ import {
   Button,
 } from 'react-native';
 
-export default class DashboardScreen extends Component {
+export default class SettingScreen extends Component {
   static navigationOptions = {
-    title: 'Dashboard',
+    title: 'Setting',
   };
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          DashboardScreen
+          SettingScreen
         </Text>
         <Button
           title="Go to Register"
