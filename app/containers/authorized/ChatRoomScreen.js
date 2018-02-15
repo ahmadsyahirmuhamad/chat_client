@@ -16,8 +16,8 @@ import {
   Dimensions,
   TextInput,
 } from 'react-native';
-
 import SubmitButton from '../../components/Button/SubmitButton'
+import { Socket } from '../../../lib/phoenix'
 
 export default class ChatRoomScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -44,10 +44,13 @@ export default class ChatRoomScreen extends Component {
           user: "John",
           body: "Hello World"
         },
-      ]
+      ],
     }
+    this.channel = this.connectToSocket()
     
     this.onSubmitMessage = this.onSubmitMessage.bind(this)
+    this.connectToSocket = this.connectToSocket.bind(this)
+    this.subscribeToChannel = this.subscribeToChannel.bind(this)
   }
 
   componentWillMount() {
@@ -55,13 +58,40 @@ export default class ChatRoomScreen extends Component {
     this.setState({
       id, title
     })
+    this.subscribeToChannel()
+  }
+
+  subscribeToChannel() {
+    this.channel.join()
+      .receive("ignore", () => console.log("auth error"))
+      .receive("ok", () => console.log("join ok"))
+
+    this.channel.onError(e => console.log("something went wrong", e))
+    this.channel.onClose(e => console.log("channel closed", e))
+
+    // incoming message event
+    this.channel.on("new:msg", msg => {
+      console.log(msg)
+      this.setState({ messages: this.state.messages.concat([msg]) })
+    })
   }
 
   onSubmitMessage() {
-    alert(this.state.message)
+    this.channel.push("new:msg", {user: 'Anon', body: this.state.message})
+    this.setState({message: ''})
+  }
+  
+  connectToSocket() {
+    const { id } = this.props.navigation.state.params;
+    // create instance socket
+    let socket = new Socket("ws://localhost:4000/socket")
+    // connect to socket
+    socket.connect()
+    const channel = socket.channel(`rooms:${id}`)
+    return channel
   }
 
-  _keyExtractor = (item, index) => item.id;
+  _keyExtractor = (item, index) => `${item.user}-${item.body}`;
 
   _renderItem = ({item}) => (
     <Text>{item.user}: {item.body}</Text>
