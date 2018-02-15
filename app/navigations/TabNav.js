@@ -4,6 +4,7 @@ import { TabNavigator } from 'react-navigation';
 import DrawerNavScreen from './DrawerNav'
 import DashboardScreen from '../containers/authorized/DashboardScreen'
 import SettingScreen from '../containers/authorized/SettingScreen'
+import ChatNav from './ChatNav'
 
 const RootStack = TabNavigator(
     {   
@@ -15,6 +16,9 @@ const RootStack = TabNavigator(
         },
         Setting: {
             screen: SettingScreen,
+        },
+        Chat: {
+            screen: ChatNav,
         },
     },
     {
