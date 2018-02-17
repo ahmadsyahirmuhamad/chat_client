@@ -1,4 +1,5 @@
 import { AppRegistry } from 'react-native';
-import RootNav from './app/navigations/rootNav'
+import App from './app/App'
 
-AppRegistry.registerComponent('chat_client', () => RootNav);
+AppRegistry.registerComponent('chat_client', () => App);
+

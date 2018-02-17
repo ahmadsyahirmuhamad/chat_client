@@ -4,29 +4,70 @@ import { StackNavigator } from 'react-navigation';
 import UnauthorizedNav from './UnauthorizedNav'
 import TabNavScreen from './TabNav'
 
-const RootStack = StackNavigator(
-    {   
-        Unauthorized: {
-            screen: UnauthorizedNav,
-        },
-        Authorized: {
-            screen: TabNavScreen,
-        },
-    },
-    {
-        initialRouteName: 'Unauthorized',
-        headerMode: 'none',
-        cardStyle: {
-          shadowColor: 'transparent',
-        },
-        navigationOptions: {
-          gesturesEnabled: false,
-        },
-    }
-);
+import localStorage from '../lib/LocalStorage'
 
-export default class RootNav extends React.Component {
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+import { updateToken } from '../actions/user_action';
+
+class RootNav extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.verifyUserToken = this.verifyUserToken.bind(this)
+        this.renderRoute = this.renderRoute.bind(this)
+    }
+
+    componentWillMount() {
+        this.verifyUserToken()
+    }
+
+    async verifyUserToken() {
+        const token = await localStorage.getItem("token")
+        if (token && token.length > 0) {
+            this.props.updateToken(token)
+        }
+    }
+
+    renderRoute() {
+        const RootStack = StackNavigator(
+            {   
+                Unauthorized: {
+                    screen: UnauthorizedNav,
+                },
+                Authorized: {
+                    screen: TabNavScreen,
+                },
+            },
+            {   
+                initialRouteName: this.props.user.authToken ? 'Authorized' : 'Unauthorized',
+                headerMode: 'none',
+                cardStyle: {
+                  shadowColor: 'transparent',
+                },
+                navigationOptions: {
+                  gesturesEnabled: false,
+                },
+            }
+        );
+        return <RootStack />
+    }
+
+
+    
     render() {
-        return <RootStack />;
+        return this.renderRoute()
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return {
+      updateToken: bindActionCreators(updateToken, dispatch)
+    }
+}
+
+const mapStateToProps = state => ({
+    user: state.user,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RootNav)

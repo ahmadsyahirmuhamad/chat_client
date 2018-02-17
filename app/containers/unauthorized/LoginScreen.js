@@ -14,10 +14,15 @@ import {
 import Button from '../../components/Button/Button'
 import InputText from '../../components/Input/InputText'
 
-export default class LoginScreen extends Component {
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+import { login } from '../../actions/user_action';
+
+class LoginScreen extends Component {
   static navigationOptions = {
     title: 'Login',
   };
+
   constructor(props) {
     super(props)
     this.state = {
@@ -40,7 +45,14 @@ export default class LoginScreen extends Component {
   }
 
   onLogin() {
-    alert(`${this.state.password} ${this.state.email}`)
+    this.props.login(this.state.email, this.state.password)
+    .then((response) => {
+      if (response) {
+        alert("success")
+      } else {
+        alert(this.props.user.message)
+      }
+    })
   }
 
   gotoRegister() {
@@ -95,3 +107,15 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
+
+const mapDispatchToProps = dispatch => {
+  return {
+    login: bindActionCreators(login, dispatch)
+  }
+}
+
+const mapStateToProps = state => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
