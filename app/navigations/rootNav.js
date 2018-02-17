@@ -5,16 +5,16 @@ import UnauthorizedNav from './UnauthorizedNav'
 import TabNavScreen from './TabNav'
 
 const RootStack = StackNavigator(
-    {
-        Authorized: {
-            screen: TabNavScreen,
-        },
+    {   
         Unauthorized: {
             screen: UnauthorizedNav,
         },
+        Authorized: {
+            screen: TabNavScreen,
+        },
     },
     {
-        initialRouteName: 'Authorized',
+        initialRouteName: 'Unauthorized',
         headerMode: 'none',
         cardStyle: {
           shadowColor: 'transparent',
