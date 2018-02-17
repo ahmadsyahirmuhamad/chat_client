@@ -30,23 +30,15 @@ export default class ChatRoomScreen extends Component {
 
   constructor(props) {
     super(props)
-
+    const { id, floatingChannel } = this.props.navigation.state.params
     this.state = {
-      id: null,
+      id: id,
       title: null,
       message: '',
-      messages: [
-        {
-          user: "Anon",
-          body: "this is a message"
-        },
-        {
-          user: "John",
-          body: "Hello World"
-        },
-      ],
+      messages: [],
     }
     this.channel = this.connectToSocket()
+    this.floatingChannel = floatingChannel
     
     this.onSubmitMessage = this.onSubmitMessage.bind(this)
     this.connectToSocket = this.connectToSocket.bind(this)
@@ -54,14 +46,15 @@ export default class ChatRoomScreen extends Component {
   }
 
   componentWillMount() {
-    const { id, title } = this.props.navigation.state.params;
-    this.setState({
-      id, title
-    })
+    const { id, title, messages } = this.props.navigation.state.params;
+    this.setState({ id, title })
+    this.setState({ messages: messages })
     this.subscribeToChannel()
   }
 
   subscribeToChannel() {
+    const { onAppendMessage } = this.props.navigation.state.params
+
     this.channel.join()
       .receive("ignore", () => console.log("auth error"))
       .receive("ok", () => console.log("join ok"))
@@ -69,15 +62,16 @@ export default class ChatRoomScreen extends Component {
     this.channel.onError(e => console.log("something went wrong", e))
     this.channel.onClose(e => console.log("channel closed", e))
 
-    // incoming message event
-    this.channel.on("new:msg", msg => {
-      console.log(msg)
-      this.setState({ messages: this.state.messages.concat([msg]) })
+    this.floatingChannel.on("new:msg", msg => {
+      if (msg.id === this.state.id) {
+        onAppendMessage(msg)
+        this.setState({ messages: this.state.messages.concat([msg]) })
+      }
     })
   }
 
   onSubmitMessage() {
-    this.channel.push("new:msg", {user: 'Anon', body: this.state.message})
+    this.channel.push("new:msg", {id: this.state.id, user: 'Anon', body: this.state.message})
     this.setState({message: ''})
   }
   

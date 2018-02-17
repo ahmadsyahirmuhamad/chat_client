@@ -15,7 +15,7 @@ const RootStack = StackNavigator(
     },
     {
         initialRouteName: 'ChatList',
-        headerMode: 'none',
+        // headerMode: 'none',
         cardStyle: {
           shadowColor: 'transparent',
         },
