@@ -14,8 +14,10 @@ import {
 } from 'react-native';
 
 export default class DashboardScreen extends Component {
-  static navigationOptions = {
-    title: 'Dashboard',
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Dashboard',
+    }
   };
 
   render() {
@@ -25,7 +27,7 @@ export default class DashboardScreen extends Component {
           DashboardScreen
         </Text>
         <Button
-          title="Go to Register"
+          title="Open Drawer"
           onPress={() => this.props.navigation.navigate('DrawerOpen')}
         />
       </View>

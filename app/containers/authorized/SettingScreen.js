@@ -14,8 +14,10 @@ import {
 } from 'react-native';
 
 export default class SettingScreen extends Component {
-  static navigationOptions = {
-    title: 'Setting',
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Setting',
+    }
   };
 
   render() {
@@ -24,6 +26,10 @@ export default class SettingScreen extends Component {
         <Text style={styles.welcome}>
           SettingScreen
         </Text>
+        <Button
+          title="Open Drawer"
+          onPress={() => this.props.navigation.navigate('DrawerOpen')}
+        />
       </View>
     );
   }

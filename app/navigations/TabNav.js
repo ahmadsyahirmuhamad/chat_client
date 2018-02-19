@@ -1,28 +1,20 @@
 import React from 'react';
 import { TabNavigator } from 'react-navigation';
 
-import DrawerNavScreen from './DrawerNav'
-import DashboardScreen from '../containers/authorized/DashboardScreen'
-import SettingScreen from '../containers/authorized/SettingScreen'
+import HomeNav from './HomeNav'
 import ChatNav from './ChatNav'
 
 const RootStack = TabNavigator(
     {   
-        DrawerNav: {
-            screen: DrawerNavScreen,
-        },
-        Dashboard: {
-            screen: DashboardScreen,
-        },
-        Setting: {
-            screen: SettingScreen,
+        Home: {
+            screen: HomeNav,
         },
         Chat: {
             screen: ChatNav,
         },
     },
     {
-        initialRouteName: 'Dashboard',
+        initialRouteName: 'Home',
         cardStyle: {
           shadowColor: 'transparent',
         },

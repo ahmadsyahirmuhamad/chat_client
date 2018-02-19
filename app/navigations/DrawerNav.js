@@ -1,13 +1,14 @@
 import React from 'react';
 import { DrawerNavigator } from 'react-navigation';
 
-import MainScreen from '../containers/authorized/MainScreen'
+import HomeScreen from '../containers/authorized/HomeScreen'
 import DashboardScreen from '../containers/authorized/DashboardScreen'
 import SettingScreen from '../containers/authorized/SettingScreen'
 
 const RootStack = DrawerNavigator(
-    {   Main: {
-            screen: MainScreen,
+    {   
+        Home: {
+            screen: HomeScreen,
         },
         Dashboard: {
             screen: DashboardScreen,
@@ -17,7 +18,7 @@ const RootStack = DrawerNavigator(
         },
     },
     {
-        initialRouteName: 'Main',
+        initialRouteName: 'Home',
         cardStyle: {
           shadowColor: 'transparent',
         },
@@ -27,7 +28,7 @@ const RootStack = DrawerNavigator(
     }
 );
 
-export default class AuthorizedNav extends React.Component {
+export default class DrawerNav extends React.Component {
     render() {
         return <RootStack />;
     }

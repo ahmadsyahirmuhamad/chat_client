@@ -13,19 +13,21 @@ import {
   Button,
 } from 'react-native';
 
-export default class MainScreen extends Component {
-  static navigationOptions = {
-    title: 'Main',
+export default class HomeScreen extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Main',
+    }
   };
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          MainScreen
+          HomeScreen
         </Text>
         <Button
-          title="Go to Register"
+          title="Open Drawer"
           onPress={() => this.props.navigation.navigate('DrawerOpen')}
         />
       </View>

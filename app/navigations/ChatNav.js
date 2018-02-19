@@ -15,7 +15,6 @@ const RootStack = StackNavigator(
     },
     {
         initialRouteName: 'ChatList',
-        // headerMode: 'none',
         cardStyle: {
           shadowColor: 'transparent',
         },
@@ -25,7 +24,7 @@ const RootStack = StackNavigator(
     }
 );
 
-export default class RootNav extends React.Component {
+export default class ChatNav extends React.Component {
     render() {
         return <RootStack />;
     }
