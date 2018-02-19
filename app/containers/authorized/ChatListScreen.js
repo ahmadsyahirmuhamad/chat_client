@@ -16,10 +16,11 @@ import {
   TouchableHighlight,
   Dimensions,
 } from 'react-native';
+import { connect } from 'react-redux';
 
 import { Socket } from '../../lib/phoenix'
 
-export default class ChatListScreen extends Component {
+class ChatListScreen extends Component {
   static navigationOptions = {
     title: 'Main',
   };
@@ -112,6 +113,7 @@ export default class ChatListScreen extends Component {
     
     this.props.navigation.navigate('ChatRoom', {
       id: item.id,
+      username: this.props.user.firstName,
       title: item.title,
       messages:  messages,
       floatingChannel: this.channel,
@@ -162,3 +164,9 @@ const styles = StyleSheet.create({
     width: width * 0.9
   }
 });
+
+const mapStateToProps = state => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps, null)(ChatListScreen)

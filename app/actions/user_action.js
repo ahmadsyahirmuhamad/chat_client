@@ -1,4 +1,4 @@
-import { LOGIN_FAILED, LOGIN_SUCCESS, UPDATE_TOKEN } from "./types";
+import { LOGIN_FAILED, LOGIN_SUCCESS, UPDATE_TOKEN, FETCH_USER_SUCCESS, FETCH_USER_FAILED } from "./types";
 import Api from '../lib/Api'
 import localStorage from '../lib/LocalStorage'
 
@@ -25,6 +25,29 @@ export function login(email, password) {
     }
 }
 
+export function fetchUser() {
+    return async function(dispatch){
+        const payload = { query: `{ currentUser { id email firstName lastName }}` }
+        const token = await localStorage.getItem("token")
+        const headers = {headers: {'authorization': `Bearer ${token}`}}
+        Api.post('/api/graphql', payload, headers)
+            .then(async (response) => {
+                const { currentUser } = response.data.data
+                if (response.status === 200 && currentUser != null) {
+                    const payload = { type: FETCH_USER_SUCCESS, payload: { user: currentUser } }
+                    dispatch(payload)
+                    // return currentUser
+                } else {
+                    const payload = { type: FETCH_USER_FAILED, payload: { message: response.data.errors[0].message } }
+                    dispatch(payload)
+                    // return currentUser
+                }
+            }).catch((err) => {
+                const payload = { type: FETCH_USER_FAILED, payload: { message: "error" } }
+                dispatch(payload)
+            })
+    }
+}
 
 export function updateToken(token) {
     return function(dispatch){

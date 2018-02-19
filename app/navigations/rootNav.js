@@ -8,7 +8,7 @@ import localStorage from '../lib/LocalStorage'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { updateToken } from '../actions/user_action';
+import { updateToken, fetchUser } from '../actions/user_action';
 
 class RootNav extends React.Component {
     constructor(props) {
@@ -26,6 +26,7 @@ class RootNav extends React.Component {
         const token = await localStorage.getItem("token")
         if (token && token.length > 0) {
             this.props.updateToken(token)
+            this.props.fetchUser()
         }
     }
 
@@ -62,7 +63,8 @@ class RootNav extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-      updateToken: bindActionCreators(updateToken, dispatch)
+      updateToken: bindActionCreators(updateToken, dispatch),
+      fetchUser: bindActionCreators(fetchUser, dispatch)
     }
 }
 

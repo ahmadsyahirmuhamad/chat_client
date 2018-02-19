@@ -16,9 +16,11 @@ export default function user(state = initialState, action = {}) {
         ...state,
         id: action.payload.id,
         email: action.payload.email,
-        firstName: action.payload.first_name,
-        lastName: action.payload.last_name,
+        firstName: action.payload.firstName,
+        lastName: action.payload.lastName,
         authToken: action.payload.token,
+
+        message: null
       };
     case types.LOGIN_FAILED:
       return {
@@ -29,6 +31,23 @@ export default function user(state = initialState, action = {}) {
       return {
         ...state,
         authToken: action.payload.token,
+        
+        message: null
+      };
+    case types.FETCH_USER_SUCCESS:
+      return {
+        ...state,
+        id: action.payload.user.id,
+        email: action.payload.user.email,
+        firstName: action.payload.user.firstName,
+        lastName: action.payload.user.lastName,
+        
+        message: null
+      };
+    case types.FETCH_USER_FAILED:
+      return {
+        ...state,
+        message: action.payload.message
       };
     default:
       return state;

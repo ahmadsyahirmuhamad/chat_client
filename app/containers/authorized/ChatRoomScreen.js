@@ -31,9 +31,10 @@ export default class ChatRoomScreen extends Component {
 
   constructor(props) {
     super(props)
-    const { id, floatingChannel } = this.props.navigation.state.params
+    const { id, username, floatingChannel } = this.props.navigation.state.params
     this.state = {
       id: id,
+      username: username,
       title: null,
       message: '',
       messages: [],
@@ -49,8 +50,8 @@ export default class ChatRoomScreen extends Component {
   }
 
   componentWillMount() {
-    const { id, title, messages } = this.props.navigation.state.params;
-    this.setState({ id, title, messages: messages })
+    const { id, title, username, messages } = this.props.navigation.state.params;
+    this.setState({ id, title, username, messages: messages })
     this.subscribeToChannel()
   }
 
@@ -102,7 +103,7 @@ export default class ChatRoomScreen extends Component {
   }
 
   onSubmitMessage() {
-    this.channel.push("new:msg", {id: this.state.id, user: 'Anon', body: this.state.message})
+    this.channel.push("new:msg", {id: this.state.id, user: this.state.username, body: this.state.message})
     this.setState({message: ''})
   }
   
