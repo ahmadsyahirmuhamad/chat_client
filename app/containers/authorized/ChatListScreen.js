@@ -17,7 +17,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { Socket } from '../../../lib/phoenix'
+import { Socket } from '../../lib/phoenix'
 
 export default class ChatListScreen extends Component {
   static navigationOptions = {
@@ -63,6 +63,10 @@ export default class ChatListScreen extends Component {
     this.subscribeToChannel()
   }
 
+  componentWillUnmount() {
+    this.channel = null
+  }
+
   connectToSocket() {
     // create instance socket
     let socket = new Socket("ws://localhost:4000/socket")
@@ -82,7 +86,7 @@ export default class ChatListScreen extends Component {
 
     // incoming message event
     this.channel.on("new:msg", msg => {
-      // this.setState({ messages: this.state.messages.concat([msg]) })
+      this.onAppendMessage(msg)
     })
   }
 

@@ -15,9 +15,10 @@ import {
   FlatList,
   Dimensions,
   TextInput,
+  AppState,
 } from 'react-native';
 import SubmitButton from '../../components/Button/SubmitButton'
-import { Socket } from '../../../lib/phoenix'
+import { Socket } from '../../lib/phoenix'
 
 export default class ChatRoomScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -36,6 +37,8 @@ export default class ChatRoomScreen extends Component {
       title: null,
       message: '',
       messages: [],
+
+      appState: AppState.currentState
     }
     this.channel = this.connectToSocket()
     this.floatingChannel = floatingChannel
@@ -47,9 +50,35 @@ export default class ChatRoomScreen extends Component {
 
   componentWillMount() {
     const { id, title, messages } = this.props.navigation.state.params;
-    this.setState({ id, title })
-    this.setState({ messages: messages })
+    this.setState({ id, title, messages: messages })
     this.subscribeToChannel()
+  }
+
+  componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+  
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+    this.channel = null
+    this.floatingChannel = null
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      console.log('App has come to the foreground!')
+    }
+    this.setState({appState: nextAppState});
+  }
+
+  connectToSocket() {
+    const { id } = this.props.navigation.state.params;
+    // create instance socket
+    let socket = new Socket("ws://localhost:4000/socket")
+    // connect to socket
+    socket.connect()
+    const channel = socket.channel(`rooms:${id}`)
+    return channel
   }
 
   subscribeToChannel() {
@@ -64,7 +93,9 @@ export default class ChatRoomScreen extends Component {
 
     this.floatingChannel.on("new:msg", msg => {
       if (msg.id === this.state.id) {
-        onAppendMessage(msg)
+        if (this.state.appState === "active") {
+          onAppendMessage(msg)
+        }
         this.setState({ messages: this.state.messages.concat([msg]) })
       }
     })
@@ -75,15 +106,7 @@ export default class ChatRoomScreen extends Component {
     this.setState({message: ''})
   }
   
-  connectToSocket() {
-    const { id } = this.props.navigation.state.params;
-    // create instance socket
-    let socket = new Socket("ws://localhost:4000/socket")
-    // connect to socket
-    socket.connect()
-    const channel = socket.channel(`rooms:${id}`)
-    return channel
-  }
+  
 
   _keyExtractor = (item, index) => `${item.user}-${item.body}`;
 
